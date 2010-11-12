@@ -1,0 +1,332 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0362C5FE128CDEA700D9B0F6 /* Course.m in Sources */ = {isa = PBXBuildFile; fileRef = 0362C5FD128CDEA700D9B0F6 /* Course.m */; };
+		039A758E128C8756004F248F /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 039A758D128C8756004F248F /* GHUnit.framework */; };
+		039A7592128C8770004F248F /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 039A7591128C8770004F248F /* libsqlite3.dylib */; };
+		039A75A4128C881C004F248F /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A759E128C881C004F248F /* FMResultSet.m */; };
+		039A75A5128C881C004F248F /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A75A0128C881C004F248F /* FMDatabaseAdditions.m */; };
+		039A75A6128C881C004F248F /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A75A2128C881C004F248F /* FMDatabase.m */; };
+		039A75AB128C8856004F248F /* DASQLiteRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A75A8128C8856004F248F /* DASQLiteRow.m */; };
+		039A75AF128C88CC004F248F /* TestDASQLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A75AD128C88CC004F248F /* TestDASQLite.m */; };
+		039A75B0128C88CC004F248F /* GHUnitTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A75AE128C88CC004F248F /* GHUnitTestMain.m */; };
+		039A7638128C922D004F248F /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A7637128C922D004F248F /* Person.m */; };
+		039A7689128CA16A004F248F /* DebugLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A7688128CA16A004F248F /* DebugLog.m */; };
+		039A76E9128CA777004F248F /* FMResultSet+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A76E8128CA777004F248F /* FMResultSet+Date.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0362C5FC128CDEA700D9B0F6 /* Course.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Course.h; path = UnitTests/Course.h; sourceTree = "<group>"; };
+		0362C5FD128CDEA700D9B0F6 /* Course.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Course.m; path = UnitTests/Course.m; sourceTree = "<group>"; };
+		039A7585128C873C004F248F /* UnitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		039A7587128C873C004F248F /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
+		039A758D128C8756004F248F /* GHUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnit.framework; path = Library/Frameworks/GHUnit.framework; sourceTree = SDKROOT; };
+		039A7591128C8770004F248F /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		039A759E128C881C004F248F /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/FMResultSet.m; sourceTree = "<group>"; };
+		039A759F128C881C004F248F /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/FMResultSet.h; sourceTree = "<group>"; };
+		039A75A0128C881C004F248F /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseAdditions.m; path = fmdb/FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		039A75A1128C881C004F248F /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseAdditions.h; path = fmdb/FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		039A75A2128C881C004F248F /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = fmdb/FMDatabase.m; sourceTree = "<group>"; };
+		039A75A3128C881C004F248F /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/FMDatabase.h; sourceTree = "<group>"; };
+		039A75A7128C8856004F248F /* DASQLiteRowProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DASQLiteRowProtocol.h; path = src/DASQLiteRowProtocol.h; sourceTree = "<group>"; };
+		039A75A8128C8856004F248F /* DASQLiteRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DASQLiteRow.m; path = src/DASQLiteRow.m; sourceTree = "<group>"; };
+		039A75A9128C8856004F248F /* DASQLiteRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DASQLiteRow.h; path = src/DASQLiteRow.h; sourceTree = "<group>"; };
+		039A75AD128C88CC004F248F /* TestDASQLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestDASQLite.m; path = UnitTests/TestDASQLite.m; sourceTree = "<group>"; };
+		039A75AE128C88CC004F248F /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GHUnitTestMain.m; path = UnitTests/GHUnitTestMain.m; sourceTree = "<group>"; };
+		039A7636128C922D004F248F /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = UnitTests/Person.h; sourceTree = "<group>"; };
+		039A7637128C922D004F248F /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Person.m; path = UnitTests/Person.m; sourceTree = "<group>"; };
+		039A7687128CA16A004F248F /* DebugLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugLog.h; sourceTree = "<group>"; };
+		039A7688128CA16A004F248F /* DebugLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DebugLog.m; sourceTree = "<group>"; };
+		039A76E7128CA777004F248F /* FMResultSet+Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FMResultSet+Date.h"; path = "src/FMResultSet+Date.h"; sourceTree = "<group>"; };
+		039A76E8128CA777004F248F /* FMResultSet+Date.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FMResultSet+Date.m"; path = "src/FMResultSet+Date.m"; sourceTree = "<group>"; };
+		08FB7796FE84155DC02AAC07 /* DASQLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DASQLite.m; sourceTree = "<group>"; };
+		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32A70AAB03705E1F00C91783 /* DASQLite_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DASQLite_Prefix.pch; sourceTree = "<group>"; };
+		C6859EA3029092ED04C91782 /* DASQLite.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = DASQLite.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		039A7583128C873C004F248F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				039A758E128C8756004F248F /* GHUnit.framework in Frameworks */,
+				039A7592128C8770004F248F /* libsqlite3.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		039A7593128C878E004F248F /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				039A75A3128C881C004F248F /* FMDatabase.h */,
+				039A75A2128C881C004F248F /* FMDatabase.m */,
+				039A759F128C881C004F248F /* FMResultSet.h */,
+				039A759E128C881C004F248F /* FMResultSet.m */,
+				039A75A1128C881C004F248F /* FMDatabaseAdditions.h */,
+				039A75A0128C881C004F248F /* FMDatabaseAdditions.m */,
+			);
+			name = FMDB;
+			sourceTree = "<group>";
+		};
+		039A7594128C8794004F248F /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				039A75A7128C8856004F248F /* DASQLiteRowProtocol.h */,
+				039A75A9128C8856004F248F /* DASQLiteRow.h */,
+				039A75A8128C8856004F248F /* DASQLiteRow.m */,
+				039A76E7128CA777004F248F /* FMResultSet+Date.h */,
+				039A76E8128CA777004F248F /* FMResultSet+Date.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		039A7595128C87A5004F248F /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				039A75AE128C88CC004F248F /* GHUnitTestMain.m */,
+				039A75AD128C88CC004F248F /* TestDASQLite.m */,
+				039A7636128C922D004F248F /* Person.h */,
+				039A7637128C922D004F248F /* Person.m */,
+				0362C5FC128CDEA700D9B0F6 /* Course.h */,
+				0362C5FD128CDEA700D9B0F6 /* Course.m */,
+			);
+			name = UnitTests;
+			sourceTree = "<group>";
+		};
+		08FB7794FE84155DC02AAC07 /* DASQLite */ = {
+			isa = PBXGroup;
+			children = (
+				039A7595128C87A5004F248F /* UnitTests */,
+				039A7594128C8794004F248F /* Classes */,
+				039A7593128C878E004F248F /* FMDB */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859EA2029092E104C91782 /* Documentation */,
+				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+				039A7587128C873C004F248F /* UnitTests-Info.plist */,
+				039A758D128C8756004F248F /* GHUnit.framework */,
+				039A7591128C8770004F248F /* libsqlite3.dylib */,
+			);
+			name = DASQLite;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				039A7687128CA16A004F248F /* DebugLog.h */,
+				039A7688128CA16A004F248F /* DebugLog.m */,
+				32A70AAB03705E1F00C91783 /* DASQLite_Prefix.pch */,
+				08FB7796FE84155DC02AAC07 /* DASQLite.m */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				039A7585128C873C004F248F /* UnitTests.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859EA2029092E104C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859EA3029092ED04C91782 /* DASQLite.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		039A7584128C873C004F248F /* UnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 039A758A128C873D004F248F /* Build configuration list for PBXNativeTarget "UnitTests" */;
+			buildPhases = (
+				039A7581128C873C004F248F /* Resources */,
+				039A7582128C873C004F248F /* Sources */,
+				039A7583128C873C004F248F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UnitTests;
+			productName = UnitTests;
+			productReference = 039A7585128C873C004F248F /* UnitTests.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "DASQLite" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* DASQLite */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				039A7584128C873C004F248F /* UnitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		039A7581128C873C004F248F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		039A7582128C873C004F248F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				039A75A6128C881C004F248F /* FMDatabase.m in Sources */,
+				039A75A5128C881C004F248F /* FMDatabaseAdditions.m in Sources */,
+				039A75A4128C881C004F248F /* FMResultSet.m in Sources */,
+				039A76E9128CA777004F248F /* FMResultSet+Date.m in Sources */,
+				039A75AB128C8856004F248F /* DASQLiteRow.m in Sources */,
+				039A75AF128C88CC004F248F /* TestDASQLite.m in Sources */,
+				039A75B0128C88CC004F248F /* GHUnitTestMain.m in Sources */,
+				039A7638128C922D004F248F /* Person.m in Sources */,
+				039A7689128CA16A004F248F /* DebugLog.m in Sources */,
+				0362C5FE128CDEA700D9B0F6 /* Course.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		039A7588128C873D004F248F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = DASQLite_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_CFLAGS = "-DDEBUGLOG";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = UnitTests;
+			};
+			name = Debug;
+		};
+		039A7589128C873D004F248F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = DASQLite_Prefix.pch;
+				INFOPLIST_FILE = "UnitTests-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = UnitTests;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		1DEB927908733DD40010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB927A08733DD40010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		039A758A128C873D004F248F /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				039A7588128C873D004F248F /* Debug */,
+				039A7589128C873D004F248F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "DASQLite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB927908733DD40010E9CD /* Debug */,
+				1DEB927A08733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
