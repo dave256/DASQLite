@@ -250,6 +250,30 @@
     GHAssertEquals([people count], (NSUInteger)2, @"[people count] should be 2");
 }
 
+-(void)testSingleQuote {
+    Person *p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
+    p1.lastName = @"D'Matteo";
+    [p1 update:db];
+    p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
+    GHAssertEqualStrings(p1.lastName, @"D'Matteo", nil);
+    p1.firstName = @"Tim";
+    [p1 insert:db];
+    NSArray *people = [Person database:db selectAllWhere:@"where lastName='D''Matteo'" orderBy:nil];
+    GHAssertEquals([people count], (NSUInteger)2, nil);
+}
+
+-(void)testDoubleQuote {
+    Person *p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
+    p1.lastName = @"D""Matteo";
+    [p1 update:db];
+    p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
+    GHAssertEqualStrings(p1.lastName, @"D""Matteo", nil);
+    p1.firstName = @"Tim";
+    [p1 insert:db];
+    NSArray *people = [Person database:db selectAllWhere:@"where lastName='D""Matteo'" orderBy:nil];
+    GHAssertEquals([people count], (NSUInteger)2, nil);
+}
+
 - (void)testSecondType {
     Course *c;
     c = [Course database:db selectOneWhere:nil orderBy:@"order by position"];
