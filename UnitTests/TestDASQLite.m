@@ -43,8 +43,9 @@
 
 - (void)setUp {
     // Run before each test method
+    // remove in case file exists
     system("/bin/rm -f /tmp/testdasqlite.db");
-    system("touch /tmp/testdasqlite.db");
+    // creates new file if does not exist
     db = [[FMDatabase alloc] initWithPath:@"/tmp/testdasqlite.db"];
     GHAssertEquals([db open], YES, @"failed to open database");
     
@@ -66,6 +67,8 @@
     // Run after each test method
     [db close];
     [db release];
+    // comment out if want to examine database afterwards
+    system("/bin/rm -f /tmp/testdasqlite.db");
 }
 
 #pragma mark -------------------- tests --------------------
