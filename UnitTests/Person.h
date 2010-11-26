@@ -10,7 +10,6 @@
 
 @interface Person : DASQLiteRow {
 
-    int pkey;
     NSString *firstName;
     NSString *lastName;
     NSDate *aDate;
@@ -18,7 +17,6 @@
     int position;
 }
 
-@property (nonatomic) int pkey;
 @property (nonatomic, retain) NSString *firstName;    
 @property (nonatomic, retain) NSString *lastName;
 @property (nonatomic, retain) NSDate *aDate;

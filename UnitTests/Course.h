@@ -11,12 +11,10 @@
 
 @interface Course : DASQLiteRow {
     
-    int pkey;
     NSString *name;
     int position;
 }
 
-@property (nonatomic) int pkey;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic) int position;
 

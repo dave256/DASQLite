@@ -10,7 +10,6 @@
 
 @implementation Course
 
-@synthesize pkey;
 @synthesize name;
 @synthesize position;
 

@@ -14,13 +14,17 @@
 
 @interface DASQLiteRow()
 
++ (NSString*)selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
 + (NSArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd;
++ (NSDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd;
 
 @end
 
 #pragma mark -------------------- implementation --------------------
 
 @implementation DASQLiteRow
+
+@synthesize pkey;
 
 #pragma mark -------------------- class methods to override --------------------
 
@@ -116,10 +120,22 @@
 }
 
 + (NSArray*)database:(FMDatabase*)db selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
+    NSString *sqlcmd = [[self class] selectAllWhere:whereClause orderBy:orderByClause];
+    return [[self class] database:db arrayOfObjectsforCommand:sqlcmd];
+}
+
++ (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
+    NSString *sqlcmd = [[self class] selectAllWhere:whereClause orderBy:orderByClause];
+    return [[self class] database:db dictionaryOfObjectsforCommand:sqlcmd];
+}
+
+#pragma mark -------------------- private class methods --------------------
+
++ (NSString*)selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
     NSString *where;
     NSString *order;
     NSString *sqlcmd;
-
+    
     if (whereClause) {
         where = [[NSString alloc] initWithFormat:@"%@", whereClause];
     }
@@ -135,10 +151,8 @@
     sqlcmd = [NSString stringWithFormat:@"select * from %@ %@ %@", [[self class] databaseTable], where, order];
     [where release];
     [order release];
-    return [[self class] database:db arrayOfObjectsforCommand:sqlcmd];
+    return sqlcmd;
 }
-
-#pragma mark -------------------- private class methods --------------------
 
 + (NSArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd {
 
@@ -150,6 +164,21 @@
         DASQLiteRow *obj = [[[self class] alloc] init];
         [rs kvcMagic:obj dates:dateCols];
         [items addObject:obj];
+        [obj release];
+    }
+    return [items autorelease];
+}
+
++ (NSDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd {
+    
+    NSMutableDictionary *items = [[NSMutableDictionary alloc] init];
+    DLog(@"%@", sqlcmd);
+    FMResultSet *rs = [db executeQuery:sqlcmd];
+    NSArray *dateCols = [[self class] dateCols];
+    while ([rs next]) {
+        DASQLiteRow *obj = [[[self class] alloc] init];
+        [rs kvcMagic:obj dates:dateCols];
+        [items setObject:obj forKey:[NSNumber numberWithInt:obj.pkey]];
         [obj release];
     }
     return [items autorelease];

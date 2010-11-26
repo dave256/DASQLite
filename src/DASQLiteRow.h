@@ -15,8 +15,10 @@
 // databaseTable and databaseTypes of DASQLiteRowProtocol must be overriden by subclasses of DASQLiteRow
 
 @interface DASQLiteRow : NSObject<DASQLiteRowProtocol> {
-
+    int pkey;
 }
+
+@property (nonatomic) int pkey;
 
 // class methods
 

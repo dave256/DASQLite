@@ -11,7 +11,6 @@
 
 @implementation Person
 
-@synthesize pkey;
 @synthesize firstName;
 @synthesize lastName;
 @synthesize aDate;
