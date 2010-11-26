@@ -25,12 +25,15 @@
 
 + (NSArray*)database:(FMDatabase*)db selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
 
++ (BOOL)createTable:(FMDatabase*)db;
++ (BOOL)createTableNoTransaction:(FMDatabase*)db;
+
 // instance methods
 
-- (BOOL)insert:(FMDatabase*) db;
+- (BOOL)insert:(FMDatabase*)db;
 - (BOOL)insertNoTransaction:(FMDatabase*) db;
 
-- (BOOL)update:(FMDatabase *) db;
+- (BOOL)update:(FMDatabase *)db;
 - (BOOL)updateNoTransaction:(FMDatabase*)db;
 
 - (BOOL)delete:(FMDatabase*)db;

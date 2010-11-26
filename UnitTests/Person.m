@@ -15,6 +15,7 @@
 @synthesize firstName;
 @synthesize lastName;
 @synthesize aDate;
+@synthesize doubleValue;
 @synthesize position;
 
 static NSString *table;
@@ -28,6 +29,7 @@ static NSArray *dateCols;
     databaseTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
                      @"int", @"pkey",
                      @"int", @"position",
+                     @"double", @"doubleValue",
                      @"NSString", @"firstName",
                      @"NSString", @"lastName",
                      @"NSDate", @"aDate",
@@ -51,7 +53,7 @@ static NSArray *dateCols;
 }
 
 - (NSString*)description {
-    return [NSString stringWithFormat:@"%@ %@ %@ %d %d", firstName, lastName, aDate, position, pkey];
+    return [NSString stringWithFormat:@"%@ %@ %@ %d %lf %d", firstName, lastName, aDate, position, doubleValue, pkey];
 }
 
 -(void) dealloc {

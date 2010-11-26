@@ -50,12 +50,14 @@
     GHAssertEquals([db open], YES, @"failed to open database");
     
     [db beginTransaction];
-    GHAssertEquals([db executeUpdate:@"create table person (pkey integer primary key, lastName text, firstName text, position integer, aDate real)"], YES, nil);
-    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate) values ('Reed', 'Dave', 2, 1289507894.9236939)"], YES, nil);
-    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate) values ('Stroeh', 'John', 3, 1289517894.9236939)"], YES, nil);
-    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate) values ('Anderson', 'Matt', 1, 1289515894.9236939)"], YES, nil);
+    [Person createTableNoTransaction:db];
+    //GHAssertEquals([db executeUpdate:@"create table person (pkey integer primary key, lastName text, firstName text, position integer, aDate real)"], YES, nil);
+    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Reed', 'Dave', 2, 1289507894.9236939, 0.5)"], YES, nil);
+    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Stroeh', 'John', 3, 1289517894.9236939, 1.5)"], YES, nil);
+    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Anderson', 'Matt', 1, 1289515894.9236939, 2.5)"], YES, nil);
     
-    GHAssertEquals([db executeUpdate:@"create table course (pkey integer primary key, name text, position integer)"], YES, nil);
+    [Course createTableNoTransaction:db];
+    //GHAssertEquals([db executeUpdate:@"create table course (pkey integer primary key, name text, position integer)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into course (name, position) values ('CS161', 2)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into course (name, position) values ('CS160', 1)"], YES, nil);
 
@@ -105,6 +107,7 @@
     p.lastName = @"Doe";
     for (int i=4; i<1004; ++i) {
         p.position = i;
+        p.doubleValue = i + 0.5;
         [p insert:db];
         GHAssertEquals(p.pkey, i, @"in theory this could be wrong if pkeys not in order");
     }
@@ -122,6 +125,7 @@
     [db beginTransaction];
     for (int i=4; i<1004; ++i) {
         p.position = i;
+        p.doubleValue = i + 0.5;
         [p insertNoTransaction:db];
     }
     [db commit];

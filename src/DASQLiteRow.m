@@ -41,6 +41,49 @@
 
 #pragma mark -------------------- class methods --------------------
 
++ (BOOL)createTable:(FMDatabase *)db {
+    [db beginTransaction];
+    BOOL ok = [self createTableNoTransaction:db];
+    [db commit];
+    return ok;
+}
+
++ (BOOL)createTableNoTransaction:(FMDatabase*)db {
+    
+    NSDictionary *colTypes = [[self class] databaseTypes];
+    NSMutableArray *cmdArray = [[NSMutableArray alloc] initWithCapacity:[colTypes count] + 5];
+    NSString *create = [[NSString alloc] initWithFormat:@"create table %@ (pkey integer primary key", [[self class] databaseTable]];
+    [cmdArray addObject:create];
+    [create release];
+    for (NSString *col in colTypes) {
+        if (! ([col isEqualToString:@"pkey"])) {
+            NSString *ctype = [colTypes objectForKey:col];
+            NSString *nameType;
+            if ([ctype isEqualToString:@"NSString"]) {
+                nameType = [[NSString alloc] initWithFormat:@", %@ text", col]; 
+            }
+            else if ([ctype isEqualToString:@"NSDate"]) {
+                nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
+            }
+            else if ([ctype isEqualToString:@"int"]) {
+                nameType = [[NSString alloc] initWithFormat:@", %@ integer", col];
+            }
+            else if ([ctype isEqualToString:@"double"]) {
+                nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
+            }
+            [cmdArray addObject:nameType];
+            [nameType release];
+        }
+    }
+    [cmdArray addObject:@")"];
+    NSString *sqlcmd = [cmdArray componentsJoinedByString:@" "];
+    [cmdArray release];
+
+    DLog(@"%@", sqlcmd);
+    [db executeUpdate:sqlcmd];
+    return YES;
+}
+
 + (id)database:(FMDatabase*)db selectOneWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
 
     NSString *where;
@@ -116,13 +159,13 @@
 
 - (BOOL)insert:(FMDatabase*) db {
     [db beginTransaction];
-    [self insertNoTransaction:db];
+    BOOL ok = [self insertNoTransaction:db];
     FMResultSet *rs = [db executeQuery:@"SELECT last_insert_rowid() as pkey"];
     [rs next];
     [rs kvcMagic:self];
     while ([rs next]);
     [db commit];
-    return YES;
+    return ok;
 }
 
 
@@ -225,16 +268,16 @@
 
 - (BOOL)update:(FMDatabase*)db {
     [db beginTransaction];
-    [self updateNoTransaction:db];
+    BOOL ok = [self updateNoTransaction:db];
     [db commit];
-    return YES;
+    return ok;
 }
 
 - (BOOL)delete:(FMDatabase*)db {
     [db beginTransaction];
-    [self deleteNoTransaction:db];
+    BOOL ok = [self deleteNoTransaction:db];
     [db commit];
-    return YES;
+    return ok;
 }
 
 - (BOOL) deleteNoTransaction:(FMDatabase*)db {

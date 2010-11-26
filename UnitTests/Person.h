@@ -14,6 +14,7 @@
     NSString *firstName;
     NSString *lastName;
     NSDate *aDate;
+    double doubleValue;
     int position;
 }
 
@@ -21,6 +22,7 @@
 @property (nonatomic, retain) NSString *firstName;    
 @property (nonatomic, retain) NSString *lastName;
 @property (nonatomic, retain) NSDate *aDate;
+@property (nonatomic) double doubleValue;
 @property (nonatomic) int position;
     
 
