@@ -111,11 +111,13 @@
     [order release];
     DLog(@"%@", sqlcmd);
     FMResultSet *rs = [db executeQuery:sqlcmd];
-    DASQLiteRow *obj;
-    [rs next];
-    obj = [[[self class] alloc] init];
-    [rs kvcMagic:obj dates:[[self class] dateCols]];        
-    while ([rs next]);
+    DASQLiteRow *obj = nil;
+    BOOL exists = [rs next];
+    if (exists) {
+        obj = [[[self class] alloc] init];
+        [rs kvcMagic:obj dates:[[self class] dateCols]];        
+        while ([rs next]);        
+    }
     return [obj autorelease];
 }
 
