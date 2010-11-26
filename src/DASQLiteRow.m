@@ -58,7 +58,7 @@
     for (NSString *col in colTypes) {
         if (! ([col isEqualToString:@"pkey"])) {
             NSString *ctype = [colTypes objectForKey:col];
-            NSString *nameType;
+            NSString *nameType = nil;
             if ([ctype isEqualToString:@"NSString"]) {
                 nameType = [[NSString alloc] initWithFormat:@", %@ text", col]; 
             }
