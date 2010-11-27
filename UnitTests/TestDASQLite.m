@@ -47,6 +47,7 @@
     system("/bin/rm -f /tmp/testdasqlite.db");
     // creates new file if does not exist
     db = [[FMDatabase alloc] initWithPath:@"/tmp/testdasqlite.db"];
+    [db setLogsErrors:YES];
     GHAssertEquals([db open], YES, @"failed to open database");
     
     [db beginTransaction];
@@ -55,13 +56,13 @@
     GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Reed', 'Dave', 2, 1289507894.9236939, 0.5)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Stroeh', 'John', 3, 1289517894.9236939, 1.5)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Anderson', 'Matt', 1, 1289515894.9236939, 2.5)"], YES, nil);
+    [db commit];
     
-    [Course createTableNoTransaction:db];
+    [Course createTable:db];
     //GHAssertEquals([db executeUpdate:@"create table course (pkey integer primary key, name text, position integer)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into course (name, position) values ('CS161', 2)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into course (name, position) values ('CS160', 1)"], YES, nil);
 
-    [db commit];
     //GHAssertEquals([db commit], YES, nil);
 }
 

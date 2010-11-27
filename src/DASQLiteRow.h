@@ -25,8 +25,9 @@
 // returns a subclass of DASQLiteRow
 + (id)database:(FMDatabase*)db selectOneWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
 
-+ (NSArray*)database:(FMDatabase*)db selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
-+ (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
++ (NSMutableArray*)database:(FMDatabase*)db select:(NSString*)sqlcmd;
++ (NSMutableArray*)database:(FMDatabase*)db selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
++ (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause;
 
 + (BOOL)createTable:(FMDatabase*)db;
 + (BOOL)createTableNoTransaction:(FMDatabase*)db;

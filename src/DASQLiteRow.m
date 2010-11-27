@@ -14,8 +14,8 @@
 
 @interface DASQLiteRow()
 
-+ (NSString*)selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
-+ (NSArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd;
++ (NSString*)allWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
++ (NSMutableArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd;
 + (NSDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd;
 
 @end
@@ -121,19 +121,23 @@
     return [obj autorelease];
 }
 
-+ (NSArray*)database:(FMDatabase*)db selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
-    NSString *sqlcmd = [[self class] selectAllWhere:whereClause orderBy:orderByClause];
++ (NSMutableArray*)database:(FMDatabase*)db select:(NSString*)sqlcmd {
     return [[self class] database:db arrayOfObjectsforCommand:sqlcmd];
 }
 
-+ (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
-    NSString *sqlcmd = [[self class] selectAllWhere:whereClause orderBy:orderByClause];
++ (NSMutableArray*)database:(FMDatabase*)db selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
+    NSString *sqlcmd = [[self class] allWhere:whereClause orderBy:orderByClause];
+    return [[self class] database:db arrayOfObjectsforCommand:sqlcmd];
+}
+
++ (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause {
+    NSString *sqlcmd = [[self class] allWhere:whereClause orderBy:nil];
     return [[self class] database:db dictionaryOfObjectsforCommand:sqlcmd];
 }
 
 #pragma mark -------------------- private class methods --------------------
 
-+ (NSString*)selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
++ (NSString*)allWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
     NSString *where;
     NSString *order;
     NSString *sqlcmd;
@@ -156,7 +160,7 @@
     return sqlcmd;
 }
 
-+ (NSArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd {
++ (NSMutableArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd {
 
     NSMutableArray *items = [[NSMutableArray alloc] init];
     DLog(@"%@", sqlcmd);
@@ -188,7 +192,7 @@
 
 #pragma mark -------------------- instance methods --------------------
 
-- (BOOL)insert:(FMDatabase*) db {
+- (BOOL)insert:(FMDatabase*)db {
     [db beginTransaction];
     BOOL ok = [self insertNoTransaction:db];
     FMResultSet *rs = [db executeQuery:@"SELECT last_insert_rowid() as pkey"];
