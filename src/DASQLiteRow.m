@@ -243,16 +243,18 @@
     [db executeUpdate:[cmdArray componentsJoinedByString:@" "]];
     [cmdArray release];
     [dataArray release];
+    
+    FMResultSet *rs = [db executeQuery:@"SELECT last_insert_rowid() as pkey"];
+    [rs next];
+    [rs kvcMagic:self];
+    while ([rs next]);
+    
     return YES;
 }
 
 - (BOOL)insertWithTransaction:(FMDatabase*)db {
     [db beginTransaction];
     BOOL ok = [self insert:db];
-    FMResultSet *rs = [db executeQuery:@"SELECT last_insert_rowid() as pkey"];
-    [rs next];
-    [rs kvcMagic:self];
-    while ([rs next]);
     [db commit];
     return ok;
 }
