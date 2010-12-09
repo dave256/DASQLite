@@ -51,7 +51,7 @@
     GHAssertEquals([db open], YES, @"failed to open database");
     
     [db beginTransaction];
-    [Person createTableNoTransaction:db];
+    [Person createTable:db];
     //GHAssertEquals([db executeUpdate:@"create table person (pkey integer primary key, lastName text, firstName text, position integer, aDate real)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Reed', 'Dave', 2, 1289507894.9236939, 0.5)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Stroeh', 'John', 3, 1289517894.9236939, 1.5)"], YES, nil);
@@ -109,7 +109,7 @@
     for (int i=4; i<1004; ++i) {
         p.position = i;
         p.doubleValue = i + 0.5;
-        [p insert:db];
+        [p insertWithTransaction:db];
         GHAssertEquals(p.pkey, i, @"in theory this could be wrong if pkeys not in order");
     }
     NSArray *people = [Person database:db selectAllWhere:nil orderBy:nil];
@@ -127,7 +127,7 @@
     for (int i=4; i<1004; ++i) {
         p.position = i;
         p.doubleValue = i + 0.5;
-        [p insertNoTransaction:db];
+        [p insert:db];
     }
     [db commit];
     NSArray *people = [Person database:db selectAllWhere:nil orderBy:nil];
@@ -140,9 +140,9 @@
 - (void)testUpdate {
     Person *p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
     p1.lastName = @"Lewis";
-    [p1 update:db];
+    [p1 updateWithTransaction:db];
     p1.position = 100;
-    [p1 update:db];
+    [p1 updateWithTransaction:db];
     NSArray *people = [Person database:db selectAllWhere:@"where firstName='Matt'" orderBy:nil];
     GHAssertEquals([people count], (NSUInteger)1, nil);
     Person *p2 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
@@ -175,9 +175,9 @@
     Person *p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
     p1.lastName = @"Lewis";
     [db beginTransaction];
-    [p1 updateNoTransaction:db];
+    [p1 update:db];
     p1.position = 100;
-    [p1 updateNoTransaction:db];
+    [p1 update:db];
     NSArray *people = [Person database:db selectAllWhere:@"where firstName='Matt'" orderBy:nil];
     GHAssertEquals([people count], (NSUInteger)1, nil);
     Person *p2 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
@@ -189,7 +189,7 @@
     p2.position = 1;
     NSDate *now = [NSDate date];
     p2.aDate = now;
-    [p2 insertNoTransaction:db];
+    [p2 insert:db];
     [db commit];
     
     people = [Person database:db selectAllWhere:@"where firstName='Matt'" orderBy:@"order by lastName, firstName"];
@@ -213,7 +213,7 @@
     [db beginTransaction];
     for (int i=4; i<1004; ++i) {
         p.position = i;
-        [p insertNoTransaction:db];
+        [p insert:db];
     }
     [db commit];
     NSArray *people = [Person database:db selectAllWhere:nil orderBy:nil];
@@ -238,7 +238,7 @@
     [db beginTransaction];
     for (int i=4; i<1004; ++i) {
         p.position = i;
-        [p insertNoTransaction:db];
+        [p insert:db];
     }
     [db commit];
     NSArray *people = [Person database:db selectAllWhere:nil orderBy:nil];
@@ -249,7 +249,7 @@
     
     [db beginTransaction];
     for (Person *p in people) {
-        [p deleteNoTransaction:db];
+        [p delete:db];
     }
     [db commit];
     people = [Person database:db selectAllWhere:@"where firstName='John'" orderBy:nil];

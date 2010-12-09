@@ -30,18 +30,18 @@
 + (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause;
 
 + (BOOL)createTable:(FMDatabase*)db;
-+ (BOOL)createTableNoTransaction:(FMDatabase*)db;
++ (BOOL)createTableWithTransaction:(FMDatabase*)db;
 
 // instance methods
 
 - (BOOL)insert:(FMDatabase*)db;
-- (BOOL)insertNoTransaction:(FMDatabase*) db;
+- (BOOL)insertWithTransaction:(FMDatabase*) db;
 
 - (BOOL)update:(FMDatabase *)db;
-- (BOOL)updateNoTransaction:(FMDatabase*)db;
+- (BOOL)updateWithTransaction:(FMDatabase*)db;
 
 - (BOOL)delete:(FMDatabase*)db;
-- (BOOL)deleteNoTransaction:(FMDatabase*)db;
+- (BOOL)deleteWithTransaction:(FMDatabase*)db;
 
 @end
 
