@@ -11,6 +11,7 @@
 #import <GHUnit/GHUnit.h>
 
 #import "FMDatabase.h"
+#import "FMDatabase+Memory.h"
 #import "Person.h"
 #import "Course.h"
 
@@ -75,6 +76,33 @@
 }
 
 #pragma mark -------------------- tests --------------------
+
+- (void)testMemory {
+    FMDatabase *memoryDB = [[FMDatabase alloc] initWithMemory];
+    [memoryDB setLogsErrors:YES];
+    [memoryDB open];
+    [memoryDB copyDatabaseToMemory:@"/tmp/testdasqlite.db"];
+    [memoryDB beginTransaction];
+    [memoryDB executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Stanton', 'Chris', 1, 1289515894.9236939, 2.5)"];
+    [memoryDB commit];
+    
+    Person *pFail = [Person database:db selectOneWhere:@"where lastName='Stanton'" orderBy:nil];
+    Person *pOk = [Person database:memoryDB selectOneWhere:@"where lastName='Stanton'" orderBy:nil];
+    
+    GHAssertNil(pFail, @"Chris Stanton should not be in file database");
+    GHAssertEqualStrings(pOk.firstName, @"Chris", @"memory database should contain Chris Stanton");
+        
+    //[db close];
+    [memoryDB saveMemoryDatabaseToFile:@"/tmp/testdasqlite.db"];
+    [memoryDB release];
+    //[db open];
+
+    Person *pOk2 = [Person database:db selectOneWhere:@"where lastName='Reed'" orderBy:nil];
+    GHAssertEqualStrings(pOk2.firstName, @"Dave", @"after reopening, it should contain Dave Reed");
+    Person *pOk3 = [Person database:db selectOneWhere:@"where lastName='Stanton'" orderBy:nil];
+    GHAssertEqualStrings(pOk3.firstName, @"Chris", @"after saving, it should contain Chris Stanton");
+    
+}
 
 - (void)testSelectAllWhereForAll {
     NSArray *people = [Person database:db selectAllWhere:nil orderBy:nil];

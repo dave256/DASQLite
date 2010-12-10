@@ -19,6 +19,7 @@
 		039A7638128C922D004F248F /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A7637128C922D004F248F /* Person.m */; };
 		039A7689128CA16A004F248F /* DebugLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A7688128CA16A004F248F /* DebugLog.m */; };
 		039A76E9128CA777004F248F /* FMResultSet+Date.m in Sources */ = {isa = PBXBuildFile; fileRef = 039A76E8128CA777004F248F /* FMResultSet+Date.m */; };
+		03AB103D12B289E700B25DF1 /* FMDatabase+Memory.m in Sources */ = {isa = PBXBuildFile; fileRef = 03AB103C12B289E700B25DF1 /* FMDatabase+Memory.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,8 @@
 		039A7688128CA16A004F248F /* DebugLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DebugLog.m; sourceTree = "<group>"; };
 		039A76E7128CA777004F248F /* FMResultSet+Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FMResultSet+Date.h"; path = "src/FMResultSet+Date.h"; sourceTree = "<group>"; };
 		039A76E8128CA777004F248F /* FMResultSet+Date.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FMResultSet+Date.m"; path = "src/FMResultSet+Date.m"; sourceTree = "<group>"; };
+		03AB103B12B289E700B25DF1 /* FMDatabase+Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FMDatabase+Memory.h"; path = "src/FMDatabase+Memory.h"; sourceTree = "<group>"; };
+		03AB103C12B289E700B25DF1 /* FMDatabase+Memory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FMDatabase+Memory.m"; path = "src/FMDatabase+Memory.m"; sourceTree = "<group>"; };
 		08FB7796FE84155DC02AAC07 /* DASQLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DASQLite.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* DASQLite_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DASQLite_Prefix.pch; sourceTree = "<group>"; };
@@ -85,6 +88,8 @@
 				039A75A8128C8856004F248F /* DASQLiteRow.m */,
 				039A76E7128CA777004F248F /* FMResultSet+Date.h */,
 				039A76E8128CA777004F248F /* FMResultSet+Date.m */,
+				03AB103B12B289E700B25DF1 /* FMDatabase+Memory.h */,
+				03AB103C12B289E700B25DF1 /* FMDatabase+Memory.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -223,6 +228,7 @@
 				039A7638128C922D004F248F /* Person.m in Sources */,
 				039A7689128CA16A004F248F /* DebugLog.m in Sources */,
 				0362C5FE128CDEA700D9B0F6 /* Course.m in Sources */,
+				03AB103D12B289E700B25DF1 /* FMDatabase+Memory.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

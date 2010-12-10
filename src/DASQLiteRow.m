@@ -116,7 +116,7 @@
     if (exists) {
         obj = [[[self class] alloc] init];
         [rs kvcMagic:obj dates:[[self class] dateCols]];        
-        while ([rs next]);        
+        [rs close];
     }
     return [obj autorelease];
 }
