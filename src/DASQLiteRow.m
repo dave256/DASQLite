@@ -241,13 +241,9 @@
     DLog(@"%@", [cmdArray componentsJoinedByString:@" "]);
     
     [db executeUpdate:[cmdArray componentsJoinedByString:@" "]];
+    self.pkey = [db lastInsertRowId];
     [cmdArray release];
     [dataArray release];
-    
-    FMResultSet *rs = [db executeQuery:@"SELECT last_insert_rowid() as pkey"];
-    [rs next];
-    [rs kvcMagic:self];
-    while ([rs next]);
     
     return YES;
 }
