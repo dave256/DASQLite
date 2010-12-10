@@ -81,7 +81,7 @@
     FMDatabase *memoryDB = [[FMDatabase alloc] initWithMemory];
     [memoryDB setLogsErrors:YES];
     [memoryDB open];
-    [memoryDB copyDatabaseToMemory:@"/tmp/testdasqlite.db"];
+    [memoryDB loadDatabaseIntoMemory:@"/tmp/testdasqlite.db"];
     [memoryDB beginTransaction];
     [memoryDB executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Stanton', 'Chris', 1, 1289515894.9236939, 2.5)"];
     [memoryDB commit];

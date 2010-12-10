@@ -12,7 +12,7 @@
 @interface FMDatabase(Memory)
 
 - (id)initWithMemory;
-- (BOOL)copyDatabaseToMemory:(NSString*)filename;
+- (BOOL)loadDatabaseIntoMemory:(NSString*)filename;
 - (BOOL)saveMemoryDatabaseToFile:(NSString*)filename;
 
 @end

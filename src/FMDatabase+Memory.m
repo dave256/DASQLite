@@ -155,7 +155,7 @@ int backupDb(
 	return self;
 }
 
-- (BOOL)copyDatabaseToMemory:(NSString*)filename {
+- (BOOL)loadDatabaseIntoMemory:(NSString*)filename {
     
     int rc = loadOrSaveDb(db, [filename fileSystemRepresentation], 0);
     if (rc == SQLITE_OK) {
