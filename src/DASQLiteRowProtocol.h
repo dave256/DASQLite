@@ -14,7 +14,6 @@
 + (NSString*)databaseTable;
 + (NSDictionary*)databaseTypes;
 + (NSArray*)dateCols;
-+ (int)getNextPkey;
 
 @end
 

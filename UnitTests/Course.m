@@ -16,26 +16,20 @@
 static NSString *table;
 static NSDictionary *databaseTypes;
 static NSArray *dateCols;
-static int pkeyCounter;
 
 + (void)initialize
 {
-    pkeyCounter = 0;
-    table = @"course";
-    
-    databaseTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
-                     @"int", @"pkey",
-                     @"int", @"position",
+    static dispatch_once_t pred;    
+    dispatch_once(&pred, ^{ 
+        table = @"course";
+        
+        databaseTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
+                         @"int", @"pkey",
+                         @"int", @"position",
                      @"NSString", @"name",
-                     nil];
-    dateCols = nil;
-}
-
-+ (int)getNextPkey {
-    dispatch_sync([[self class] pkeyDQ], ^{
-        pkeyCounter++;
+                         nil];
+        dateCols = nil;
     });
-    return pkeyCounter;
 }
 
 + (NSString*)databaseTable

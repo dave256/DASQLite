@@ -20,13 +20,11 @@
 static NSString *table;
 static NSDictionary *databaseTypes;
 static NSArray *dateCols;
-static int pkeyCounter;
 
 + (void)initialize
 {
     static dispatch_once_t pred;    
     dispatch_once(&pred, ^{ 
-        pkeyCounter = 0;
         table = @"person";
         
         databaseTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -39,13 +37,6 @@ static int pkeyCounter;
                          nil];
         dateCols = [[NSArray alloc] initWithObjects:@"aDate", nil];
     });
-}
-
-+ (int)getNextPkey {
-    dispatch_sync([[self class] pkeyDQ], ^{
-        pkeyCounter++;
-    });
-    return pkeyCounter;
 }
 
 + (NSString*)databaseTable

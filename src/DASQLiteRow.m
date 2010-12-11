@@ -10,8 +10,6 @@
 #import "FMResultSet+Date.h"
 #import "DASQLiteRow.h"
 
-static dispatch_queue_t pkeyDQ;
-
 #pragma mark -------------------- private methods --------------------
 
 @interface DASQLiteRow()
@@ -45,30 +43,13 @@ static dispatch_queue_t pkeyDQ;
     return nil;
 }
 
-+ (int)getNextPkey {
-    [NSException raise:NSInternalInconsistencyException format:@"You must override getNextPkey in a subclass", NSStringFromSelector(_cmd)];
-    return -1;
-}
-
 #pragma mark -------------------- class methods --------------------
-
-+ (void)initialize
-{
-    static dispatch_once_t pred;    
-    dispatch_once(&pred, ^{ 
-        pkeyDQ = dispatch_queue_create("com.dave256apps.dasqlite.pkey", NULL);
-    });
-}
-
-+ (dispatch_queue_t)pkeyDQ {
-    return pkeyDQ;
-}
 
 + (BOOL)createTable:(FMDatabase*)db {
     
     NSDictionary *colTypes = [[self class] databaseTypes];
     NSMutableArray *cmdArray = [[NSMutableArray alloc] initWithCapacity:[colTypes count] + 5];
-    NSString *create = [[NSString alloc] initWithFormat:@"create table %@ (pkey integer", [[self class] databaseTable]];
+    NSString *create = [[NSString alloc] initWithFormat:@"create table %@ (pkey integer primary key", [[self class] databaseTable]];
     [cmdArray addObject:create];
     [create release];
     for (NSString *col in colTypes) {
@@ -230,10 +211,6 @@ static dispatch_queue_t pkeyDQ;
 }
 
 - (BOOL)insert:(FMDatabase*)db {
-    
-    if (pkey == 0) {
-        pkey = [[self class] getNextPkey];
-    }    
     NSDictionary *colTypes = [[self class] databaseTypes];
     
     NSMutableArray *cmdArray = [[NSMutableArray alloc] init];
@@ -243,29 +220,31 @@ static dispatch_queue_t pkeyDQ;
     [cmdArray addObject:@"("];
     [dataArray addObject:@"("];
     for (NSString *col in colTypes) {
-        NSString *s;
-        NSString *ctype = [colTypes objectForKey:col];
-        if ([self valueForKey:col]) {
-            
-            [cmdArray addObject:col];
-            [cmdArray addObject:@","];
-            
-            if ([ctype isEqualToString:@"NSString"]) {
-                NSString *val = [self valueForKey:col];
-                s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
+        if (! ([col isEqualToString:@"pkey"])) {
+            NSString *s;
+            NSString *ctype = [colTypes objectForKey:col];
+            if ([self valueForKey:col]) {
+                
+                [cmdArray addObject:col];
+                [cmdArray addObject:@","];
+                
+                if ([ctype isEqualToString:@"NSString"]) {
+                    NSString *val = [self valueForKey:col];
+                    s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
+                }
+                else if ([ctype isEqualToString:@"NSDate"]) {
+                    NSDate *val = [self valueForKey:col];
+                    s = [[NSString alloc] initWithFormat:@"%lf", [val timeIntervalSince1970]];
+                }
+                // int or double
+                else {
+                    s = [[NSString alloc] initWithFormat:@"%@", [self valueForKey:col]];
+                }
+                
+                [dataArray addObject:s];
+                [s release];
+                [dataArray addObject:@","];
             }
-            else if ([ctype isEqualToString:@"NSDate"]) {
-                NSDate *val = [self valueForKey:col];
-                s = [[NSString alloc] initWithFormat:@"%lf", [val timeIntervalSince1970]];
-            }
-            // int or double
-            else {
-                s = [[NSString alloc] initWithFormat:@"%@", [self valueForKey:col]];
-            }
-            
-            [dataArray addObject:s];
-            [s release];
-            [dataArray addObject:@","];
         }
     }
     
@@ -280,6 +259,7 @@ static dispatch_queue_t pkeyDQ;
     DLog(@"%@", [cmdArray componentsJoinedByString:@" "]);
     
     [db executeUpdate:[cmdArray componentsJoinedByString:@" "]];
+    self.pkey = [db lastInsertRowId];
     [cmdArray release];
     [dataArray release];
     

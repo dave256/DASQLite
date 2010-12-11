@@ -22,8 +22,6 @@
 
 // class methods
 
-+ (dispatch_queue_t)pkeyDQ;
-
 // returns a subclass of DASQLiteRow
 + (id)database:(FMDatabase*)db selectOneWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
 
