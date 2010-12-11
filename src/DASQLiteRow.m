@@ -16,7 +16,7 @@
 
 + (NSString*)allWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
 + (NSMutableArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd;
-+ (NSDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd;
++ (NSMutableDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd;
 
 @end
 
@@ -130,7 +130,7 @@
     return [[self class] database:db arrayOfObjectsforCommand:sqlcmd];
 }
 
-+ (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause {
++ (NSMutableDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause {
     NSString *sqlcmd = [[self class] allWhere:whereClause orderBy:nil];
     return [[self class] database:db dictionaryOfObjectsforCommand:sqlcmd];
 }

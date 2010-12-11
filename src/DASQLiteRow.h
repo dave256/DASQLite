@@ -27,7 +27,7 @@
 
 + (NSMutableArray*)database:(FMDatabase*)db select:(NSString*)sqlcmd;
 + (NSMutableArray*)database:(FMDatabase*)db selectAllWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
-+ (NSDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause;
++ (NSMutableDictionary*)database:(FMDatabase*)db dictionarySelectAllWhere:(NSString*)whereClause;
 
 + (BOOL)createTable:(FMDatabase*)db;
 + (BOOL)createTableWithTransaction:(FMDatabase*)db;
