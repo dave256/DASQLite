@@ -280,7 +280,6 @@ static dispatch_queue_t pkeyDQ;
     DLog(@"%@", [cmdArray componentsJoinedByString:@" "]);
     
     [db executeUpdate:[cmdArray componentsJoinedByString:@" "]];
-    self.pkey = [db lastInsertRowId];
     [cmdArray release];
     [dataArray release];
     
