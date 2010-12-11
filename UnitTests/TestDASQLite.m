@@ -54,13 +54,56 @@
     [db beginTransaction];
     [Person createTable:db];
     //GHAssertEquals([db executeUpdate:@"create table person (pkey integer primary key, lastName text, firstName text, position integer, aDate real)"], YES, nil);
-    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Reed', 'Dave', 2, 1289507894.9236939, 0.5)"], YES, nil);
-    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Stroeh', 'John', 3, 1289517894.9236939, 1.5)"], YES, nil);
-    GHAssertEquals([db executeUpdate:@"insert into person (lastName, firstName, position, aDate, doubleValue) values ('Anderson', 'Matt', 1, 1289515894.9236939, 2.5)"], YES, nil);
-    [db commit];
+
+    Person *p;
+    
+    p = [[Person alloc] init];
+    p.firstName = @"Dave";
+    p.lastName = @"Reed";
+    p.position = 2;
+    p.doubleValue = 0.5;
+    p.aDate = [NSDate date];
+    [p insert:db];
+    [p release];
+    
+    p = [[Person alloc] init];
+    p.firstName = @"John";
+    p.lastName = @"Stroeh";
+    p.position = 3;
+    p.doubleValue = 1.5;
+    p.aDate = [NSDate date];
+    [p insert:db];
+    [p release];
+    
+    p = [[Person alloc] init];
+    p.firstName = @"Matt";
+    p.lastName = @"Anderson";
+    p.position = 1;
+    p.doubleValue = 2.5;
+    p.aDate = [NSDate date];
+    [p insert:db];
+    [p release];
+    
+   [db commit];
     
     [Course createTable:db];
     //GHAssertEquals([db executeUpdate:@"create table course (pkey integer primary key, name text, position integer)"], YES, nil);
+    
+    Course *c;
+    
+    c = [[Course alloc] init];
+    c.position = 2;
+    c.name = @"CS161";
+    [c insert:db];
+    [c release];
+    
+    c = [[Course alloc] init];
+    c.position = 1;
+    c.name = @"CS160";
+    [c insert:db];
+    [c release];
+    
+    
     GHAssertEquals([db executeUpdate:@"insert into course (name, position) values ('CS161', 2)"], YES, nil);
     GHAssertEquals([db executeUpdate:@"insert into course (name, position) values ('CS160', 1)"], YES, nil);
 
@@ -76,6 +119,16 @@
 }
 
 #pragma mark -------------------- tests --------------------
+
+- (void)testInit {
+    Person *p = [[Person alloc] init];
+    GHAssertNotNil(p.firstName, nil);
+    GHAssertNotNil(p.lastName, nil);
+    GHAssertEqualStrings(p.firstName, @"", nil);
+    GHAssertEqualStrings(p.lastName, @"", nil);
+    GHAssertEquals(p.position, 0, nil);
+    GHAssertEquals(p.pkey, 0, nil);
+}
 
 - (void)testMemory {
     FMDatabase *memoryDB = [[FMDatabase alloc] initWithMemory];
@@ -135,6 +188,7 @@
     p.firstName = @"John";
     p.lastName = @"Doe";
     for (int i=4; i<1004; ++i) {
+        p.pkey = 0;
         p.position = i;
         p.doubleValue = i + 0.5;
         [p insertWithTransaction:db];
@@ -153,6 +207,7 @@
     p.lastName = @"Doe";
     [db beginTransaction];
     for (int i=4; i<1004; ++i) {
+        p.pkey = 0;
         p.position = i;
         p.doubleValue = i + 0.5;
         [p insert:db];
@@ -182,6 +237,7 @@
     p2.position = 1;
     NSDate *now = [NSDate date];
     p2.aDate = now;
+    p2.pkey = 0;
     [p2 insert:db];
     
     people = [Person database:db selectAllWhere:@"where firstName='Matt'" orderBy:@"order by lastName, firstName"];
@@ -217,6 +273,7 @@
     p2.position = 1;
     NSDate *now = [NSDate date];
     p2.aDate = now;
+    p2.pkey = 0;
     [p2 insert:db];
     [db commit];
     
@@ -241,6 +298,7 @@
     [db beginTransaction];
     for (int i=4; i<1004; ++i) {
         p.position = i;
+        p.pkey = 0;
         [p insert:db];
     }
     [db commit];
@@ -266,6 +324,7 @@
     [db beginTransaction];
     for (int i=4; i<1004; ++i) {
         p.position = i;
+        p.pkey = 0;
         [p insert:db];
     }
     [db commit];
@@ -293,6 +352,7 @@
     p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
     GHAssertEqualStrings(p1.lastName, @"D'Matteo", nil);
     p1.firstName = @"Tim";
+    p1.pkey = 0;
     [p1 insert:db];
     NSArray *people = [Person database:db selectAllWhere:@"where lastName='D''Matteo'" orderBy:nil];
     GHAssertEquals([people count], (NSUInteger)2, nil);
@@ -305,6 +365,7 @@
     p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
     GHAssertEqualStrings(p1.lastName, @"D""Matteo", nil);
     p1.firstName = @"Tim";
+    p1.pkey = 0;
     [p1 insert:db];
     NSArray *people = [Person database:db selectAllWhere:@"where lastName='D""Matteo'" orderBy:nil];
     GHAssertEquals([people count], (NSUInteger)2, nil);

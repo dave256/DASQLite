@@ -16,9 +16,11 @@
 static NSString *table;
 static NSDictionary *databaseTypes;
 static NSArray *dateCols;
+static int pkeyCounter;
 
 + (void)initialize
 {
+    pkeyCounter = 0;
     table = @"course";
     
     databaseTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -27,6 +29,13 @@ static NSArray *dateCols;
                      @"NSString", @"name",
                      nil];
     dateCols = nil;
+}
+
++ (int)getNextPkey {
+    dispatch_sync([[self class] pkeyDQ], ^{
+        pkeyCounter++;
+    });
+    return pkeyCounter;
 }
 
 + (NSString*)databaseTable

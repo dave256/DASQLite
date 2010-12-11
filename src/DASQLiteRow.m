@@ -10,6 +10,8 @@
 #import "FMResultSet+Date.h"
 #import "DASQLiteRow.h"
 
+static dispatch_queue_t pkeyDQ;
+
 #pragma mark -------------------- private methods --------------------
 
 @interface DASQLiteRow()
@@ -43,13 +45,30 @@
     return nil;
 }
 
++ (int)getNextPkey {
+    [NSException raise:NSInternalInconsistencyException format:@"You must override getNextPkey in a subclass", NSStringFromSelector(_cmd)];
+    return -1;
+}
+
 #pragma mark -------------------- class methods --------------------
+
++ (void)initialize
+{
+    static dispatch_once_t pred;    
+    dispatch_once(&pred, ^{ 
+        pkeyDQ = dispatch_queue_create("com.dave256apps.dasqlite.pkey", NULL);
+    });
+}
+
++ (dispatch_queue_t)pkeyDQ {
+    return pkeyDQ;
+}
 
 + (BOOL)createTable:(FMDatabase*)db {
     
     NSDictionary *colTypes = [[self class] databaseTypes];
     NSMutableArray *cmdArray = [[NSMutableArray alloc] initWithCapacity:[colTypes count] + 5];
-    NSString *create = [[NSString alloc] initWithFormat:@"create table %@ (pkey integer primary key", [[self class] databaseTable]];
+    NSString *create = [[NSString alloc] initWithFormat:@"create table %@ (pkey integer", [[self class] databaseTable]];
     [cmdArray addObject:create];
     [create release];
     for (NSString *col in colTypes) {
@@ -175,7 +194,7 @@
     return [items autorelease];
 }
 
-+ (NSDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd {
++ (NSMutableDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd {
     
     NSMutableDictionary *items = [[NSMutableDictionary alloc] init];
     DLog(@"%@", sqlcmd);
@@ -192,7 +211,29 @@
 
 #pragma mark -------------------- instance methods --------------------
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        NSDictionary *colTypes = [[self class] databaseTypes];
+        for (NSString *col in colTypes) {
+            NSString *ctype = [colTypes objectForKey:col];
+            if ([ctype isEqualToString:@"NSString"]) {
+                [self setValue:@"" forKey:col];
+            }
+            else if ([ctype isEqualToString:@"NSDate"]) {
+                [self setValue:[NSDate date] forKey:col];
+            }
+            // numeric types should automatically be set to zero
+        }
+    }
+    return self;
+}
+
 - (BOOL)insert:(FMDatabase*)db {
+    
+    if (pkey == 0) {
+        pkey = [[self class] getNextPkey];
+    }    
     NSDictionary *colTypes = [[self class] databaseTypes];
     
     NSMutableArray *cmdArray = [[NSMutableArray alloc] init];
@@ -202,31 +243,29 @@
     [cmdArray addObject:@"("];
     [dataArray addObject:@"("];
     for (NSString *col in colTypes) {
-        if (! ([col isEqualToString:@"pkey"])) {
-            NSString *s;
-            NSString *ctype = [colTypes objectForKey:col];
-            if ([self valueForKey:col]) {
-                
-                [cmdArray addObject:col];
-                [cmdArray addObject:@","];
-                
-                if ([ctype isEqualToString:@"NSString"]) {
-                    NSString *val = [self valueForKey:col];
-                    s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
-                }
-                else if ([ctype isEqualToString:@"NSDate"]) {
-                    NSDate *val = [self valueForKey:col];
-                    s = [[NSString alloc] initWithFormat:@"%lf", [val timeIntervalSince1970]];
-                }
-                // int or double
-                else {
-                    s = [[NSString alloc] initWithFormat:@"%@", [self valueForKey:col]];
-                }
-                
-                [dataArray addObject:s];
-                [s release];
-                [dataArray addObject:@","];
+        NSString *s;
+        NSString *ctype = [colTypes objectForKey:col];
+        if ([self valueForKey:col]) {
+            
+            [cmdArray addObject:col];
+            [cmdArray addObject:@","];
+            
+            if ([ctype isEqualToString:@"NSString"]) {
+                NSString *val = [self valueForKey:col];
+                s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
             }
+            else if ([ctype isEqualToString:@"NSDate"]) {
+                NSDate *val = [self valueForKey:col];
+                s = [[NSString alloc] initWithFormat:@"%lf", [val timeIntervalSince1970]];
+            }
+            // int or double
+            else {
+                s = [[NSString alloc] initWithFormat:@"%@", [self valueForKey:col]];
+            }
+            
+            [dataArray addObject:s];
+            [s release];
+            [dataArray addObject:@","];
         }
     }
     
