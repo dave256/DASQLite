@@ -49,7 +49,7 @@
     
     NSDictionary *colTypes = [[self class] databaseTypes];
     NSMutableArray *cmdArray = [[NSMutableArray alloc] initWithCapacity:[colTypes count] + 5];
-    NSString *create = [[NSString alloc] initWithFormat:@"create table %@ (pkey integer primary key", [[self class] databaseTable]];
+    NSString *create = [[NSString alloc] initWithFormat:@"create table %@ (pkey integer primary key autoincrement", [[self class] databaseTable]];
     [cmdArray addObject:create];
     [create release];
     for (NSString *col in colTypes) {
