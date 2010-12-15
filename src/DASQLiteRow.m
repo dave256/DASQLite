@@ -230,7 +230,12 @@
                 
                 if ([ctype isEqualToString:@"NSString"]) {
                     NSString *val = [self valueForKey:col];
-                    s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
+                    if (val) {
+                        s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];    
+                    }
+                    else {
+                        s = [[NSString alloc] initWithFormat:@""];
+                    }
                 }
                 else if ([ctype isEqualToString:@"NSDate"]) {
                     NSDate *val = [self valueForKey:col];
@@ -284,28 +289,30 @@
     for (NSString *col in colTypes) {
         NSString *s;
         NSString *ctype = [colTypes objectForKey:col];
-        if ([self valueForKey:col]) {
-
-            if ([ctype isEqualToString:@"NSString"]) {
-                NSString *val = [self valueForKey:col];
+        if ([ctype isEqualToString:@"NSString"]) {
+            NSString *val = [self valueForKey:col];
+            if (val) {
                 s = [[NSString alloc] initWithFormat:@"%@='%@'",
                      col, [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
             }
-            else if ([ctype isEqualToString:@"NSDate"]) {
-                NSDate *val = [self valueForKey:col];
-                s = [[NSString alloc] initWithFormat:@"%@=%lf",
-                     col, [val timeIntervalSince1970]];
-            }
-            // int or double
             else {
-                s = [[NSString alloc] initWithFormat:@"%@=%@",
-                     col, [self valueForKey:col]];
+                s = [[NSString alloc] initWithFormat:@"%@=''", col];
             }
-
-            [cmdArray addObject:s];
-            [s release];
-            [cmdArray addObject:@","];
         }
+        else if ([ctype isEqualToString:@"NSDate"]) {
+            NSDate *val = [self valueForKey:col];
+            s = [[NSString alloc] initWithFormat:@"%@=%lf",
+                 col, [val timeIntervalSince1970]];
+        }
+        // int or double
+        else {
+            s = [[NSString alloc] initWithFormat:@"%@=%@",
+                 col, [self valueForKey:col]];
+        }
+        
+        [cmdArray addObject:s];
+        [s release];
+        [cmdArray addObject:@","];
     }
 
     [cmdArray removeLastObject];

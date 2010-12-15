@@ -201,6 +201,26 @@
     GHAssertEquals([people count], (NSUInteger)1001, nil);
 }
 
+- (void)testInsertUpdateEmptyString {
+    [db executeUpdate:@"delete from person"];
+    Person *p = [[Person alloc] init];
+    p.firstName = @"";
+    p.lastName = @"Reed";
+    [p insert:db];
+
+    Person *pr;
+    pr = [Person database:db selectOneWhere:@"where lastName='Reed'" orderBy:nil];
+    GHAssertEqualStrings(pr.firstName, @"", nil);
+    GHAssertEqualStrings(pr.lastName, @"Reed", nil);
+    
+    p.firstName = @"Dave";
+    p.lastName = @"";
+    [p update:db];
+    pr = [Person database:db selectOneWhere:@"where firstName='Dave'" orderBy:nil];
+    GHAssertEqualStrings(pr.firstName, @"Dave", nil);
+    GHAssertEqualStrings(pr.lastName, @"", nil);
+}
+
 - (void)testInsertNoTransaction {
     Person *p = [[Person alloc] init];
     p.firstName = @"John";
