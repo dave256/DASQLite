@@ -230,6 +230,9 @@
                 
                 if ([ctype isEqualToString:@"NSString"]) {
                     NSString *val = [self valueForKey:col];
+                    if ([val isKindOfClass:[NSAttributedString class]]) {
+                        val = [(NSAttributedString*)val string];
+                    }
                     if (val) {
                         s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];    
                     }
@@ -292,6 +295,10 @@
         if ([ctype isEqualToString:@"NSString"]) {
             NSString *val = [self valueForKey:col];
             if (val) {
+                if ([val isKindOfClass:[NSAttributedString class]]) {
+                    val = [(NSAttributedString*)val string];
+                }
+                
                 s = [[NSString alloc] initWithFormat:@"%@='%@'",
                      col, [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
             }
