@@ -280,51 +280,56 @@
 
 - (BOOL)update:(FMDatabase *)db {
     NSDictionary *colTypes = [[self class] databaseTypes];
-
-    NSMutableArray *cmdArray = [[NSMutableArray alloc] init];
+    NSUInteger numCols = [colTypes count];
+    NSMutableArray *dataArray = [[NSMutableArray alloc] initWithCapacity:numCols];
+    NSMutableArray *cmdArray = [[NSMutableArray alloc] initWithCapacity:numCols*2 + 5];
     [cmdArray addObject:@"update"];
     [cmdArray addObject:[[self class] databaseTable]];
     [cmdArray addObject:@"set"];
 
     for (NSString *col in colTypes) {
-        NSString *s;
+        id s;
         NSString *ctype = [colTypes objectForKey:col];
+        NSString *colValue = [[NSString alloc] initWithFormat:@"%@=?", col];
+        [cmdArray addObject:colValue];
+        [colValue release];
+        
         if ([ctype isEqualToString:@"NSString"]) {
             NSString *val = [self valueForKey:col];
+            if ([val isKindOfClass:[NSAttributedString class]]) {
+                val = [(NSAttributedString*)val string];
+            }
             if (val) {
-                if ([val isKindOfClass:[NSAttributedString class]]) {
-                    val = [(NSAttributedString*)val string];
-                }
-                
-                s = [[NSString alloc] initWithFormat:@"%@='%@'",
-                     col, [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];
+                s = [[NSString alloc] initWithString:val];
             }
             else {
-                s = [[NSString alloc] initWithFormat:@"%@=''", col];
+                s = [[NSString alloc] initWithFormat:@""];
             }
         }
         else if ([ctype isEqualToString:@"NSDate"]) {
             NSDate *val = [self valueForKey:col];
-            s = [[NSString alloc] initWithFormat:@"%@=%lf",
-                 col, [val timeIntervalSince1970]];
+            s = [[NSNumber alloc] initWithDouble:[val timeIntervalSince1970]];
+            
         }
         // int or double
         else {
-            s = [[NSString alloc] initWithFormat:@"%@=%@",
-                 col, [self valueForKey:col]];
+            s = [self valueForKey:col];
+            [s retain];
         }
         
-        [cmdArray addObject:s];
+        [dataArray addObject:s];
         [s release];
         [cmdArray addObject:@","];
     }
 
     [cmdArray removeLastObject];
     [cmdArray addObject:[NSString stringWithFormat:@"where pkey=%@", [self valueForKey:@"pkey"]]];
-    DLog(@"%@", [cmdArray componentsJoinedByString:@" "]);
-    [db executeUpdate:[cmdArray componentsJoinedByString:@" "]];
+    NSString *sqlcmd = [cmdArray componentsJoinedByString:@" "];
+    DLog(@"%@", sqlcmd);
     [cmdArray release];
-    return YES;
+    BOOL result =[db executeUpdate:sqlcmd withArgumentsInArray:dataArray];
+    [dataArray release];
+    return result;
 }
 
 - (BOOL)updateWithTransaction:(FMDatabase*)db {
