@@ -10,7 +10,8 @@
 #import "FMResultSet+Date.h"
 #import "DASQLiteRow.h"
 
-#pragma mark -------------------- private methods --------------------
+#pragma mark -
+#pragma mark private methods
 
 @interface DASQLiteRow()
 
@@ -20,13 +21,15 @@
 
 @end
 
-#pragma mark -------------------- implementation --------------------
+#pragma mark -
+#pragma mark implementation
 
 @implementation DASQLiteRow
 
 @synthesize pkey;
 
-#pragma mark -------------------- class methods to override --------------------
+#pragma mark -
+#pragma mark class methods to override
 
 + (NSString*)databaseTable {
     [NSException raise:NSInternalInconsistencyException format:@"You must override databaseTable in a subclass", NSStringFromSelector(_cmd)];
@@ -43,7 +46,8 @@
     return nil;
 }
 
-#pragma mark -------------------- class methods --------------------
+#pragma mark -
+#pragma mark class methods
 
 + (BOOL)createTable:(FMDatabase*)db {
     
@@ -135,7 +139,8 @@
     return [[self class] database:db dictionaryOfObjectsforCommand:sqlcmd];
 }
 
-#pragma mark -------------------- private class methods --------------------
+#pragma mark -
+#pragma mark private class methods
 
 + (NSString*)allWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
     NSString *where;
@@ -190,7 +195,8 @@
     return [items autorelease];
 }
 
-#pragma mark -------------------- instance methods --------------------
+#pragma mark -
+#pragma mark instance methods
 
 - (id)init {
     self = [super init];
@@ -212,21 +218,19 @@
 
 - (BOOL)insert:(FMDatabase*)db {
     NSDictionary *colTypes = [[self class] databaseTypes];
-    
-    NSMutableArray *cmdArray = [[NSMutableArray alloc] init];
-    NSMutableArray *dataArray = [[NSMutableArray alloc] init];
-    [cmdArray addObject:@"insert into"];
-    [cmdArray addObject:[[self class] databaseTable]];
-    [cmdArray addObject:@"("];
-    [dataArray addObject:@"("];
+    NSUInteger numCols = [colTypes count];
+    NSMutableArray *colArray = [[NSMutableArray alloc] initWithCapacity:numCols];
+    NSMutableArray *valuesArray = [[NSMutableArray alloc] initWithCapacity:numCols];
+    NSMutableArray *dataArray = [[NSMutableArray alloc] initWithCapacity:numCols];
+
     for (NSString *col in colTypes) {
         if (! ([col isEqualToString:@"pkey"])) {
-            NSString *s;
+            id s;
             NSString *ctype = [colTypes objectForKey:col];
             if ([self valueForKey:col]) {
                 
-                [cmdArray addObject:col];
-                [cmdArray addObject:@","];
+                [colArray addObject:col];
+                [valuesArray addObject:@"?"];
                 
                 if ([ctype isEqualToString:@"NSString"]) {
                     NSString *val = [self valueForKey:col];
@@ -234,7 +238,7 @@
                         val = [(NSAttributedString*)val string];
                     }
                     if (val) {
-                        s = [[NSString alloc] initWithFormat:@"'%@'", [val stringByReplacingOccurrencesOfString:@"'" withString:@"''"]];    
+                        s = [[NSString alloc] initWithString:val];
                     }
                     else {
                         s = [[NSString alloc] initWithFormat:@""];
@@ -242,36 +246,29 @@
                 }
                 else if ([ctype isEqualToString:@"NSDate"]) {
                     NSDate *val = [self valueForKey:col];
-                    s = [[NSString alloc] initWithFormat:@"%lf", [val timeIntervalSince1970]];
+                    s = [[NSNumber alloc] initWithDouble:[val timeIntervalSince1970]];
+
                 }
                 // int or double
                 else {
-                    s = [[NSString alloc] initWithFormat:@"%@", [self valueForKey:col]];
+                    s = [self valueForKey:col];
+                    [s retain];
                 }
                 
                 [dataArray addObject:s];
                 [s release];
-                [dataArray addObject:@","];
             }
         }
     }
-    
-    [cmdArray removeLastObject];
-    [dataArray removeLastObject];
-    
-    [cmdArray addObject:@") values"];
-    [dataArray addObject:@")"];
-    
-    [cmdArray addObjectsFromArray:dataArray];
-    
-    DLog(@"%@", [cmdArray componentsJoinedByString:@" "]);
-    
-    [db executeUpdate:[cmdArray componentsJoinedByString:@" "]];
+    NSString *sqlcmd = [[NSString alloc] initWithFormat:@"insert into %@ (%@) values (%@)", [[self class] databaseTable], [colArray componentsJoinedByString:@","], [valuesArray componentsJoinedByString:@","]];
+    BOOL result = [db executeUpdate:sqlcmd withArgumentsInArray:dataArray];
     self.pkey = [db lastInsertRowId];
-    [cmdArray release];
+    [sqlcmd release];
+    [colArray release];
+    [valuesArray release];
     [dataArray release];
     
-    return YES;
+    return result;
 }
 
 - (BOOL)insertWithTransaction:(FMDatabase*)db {
