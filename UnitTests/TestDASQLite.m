@@ -380,15 +380,34 @@
 
 -(void)testDoubleQuote {
     Person *p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
-    p1.lastName = @"D""Matteo";
+    p1.lastName = @"D\"Matteo";
     [p1 update:db];
     p1 = [Person database:db selectOneWhere:@"where firstName='Matt'" orderBy:nil];
-    GHAssertEqualStrings(p1.lastName, @"D""Matteo", nil);
+    GHAssertEqualStrings(p1.lastName, @"D\"Matteo", nil);
     p1.firstName = @"Tim";
     p1.pkey = 0;
     [p1 insert:db];
-    NSArray *people = [Person database:db selectAllWhere:@"where lastName='D""Matteo'" orderBy:nil];
+    NSArray *people = [Person database:db selectAllWhere:@"where lastName='D\"Matteo'" orderBy:nil];
     GHAssertEquals([people count], (NSUInteger)2, nil);
+}
+
+- (void)testQuestion {
+    Person *p1 = [[Person alloc] init];
+    p1.firstName = @"Dave?";
+    p1.lastName = @"Reed";
+    [p1 insert:db];
+    NSArray *people = [Person database:db selectAllWhere:@"where lastName='Reed'" orderBy:@"order by firstName"];
+    GHAssertEquals([people count], (NSUInteger)2, nil);
+    Person *p2;
+    p2 = [people objectAtIndex:0];
+    GHAssertEqualStrings(p2.firstName, @"Dave", nil);
+    p2 = [people objectAtIndex:1];
+    GHAssertEqualStrings(p2.firstName, @"Dave?", nil);
+    
+    p1.lastName = @"Re?ed";
+    [p1 update:db];
+    people = [Person database:db selectAllWhere:@"where lastName='Re?ed'" orderBy:nil];
+    GHAssertEquals([people count], (NSUInteger)1, nil);   
 }
 
 - (void)testSecondType {
