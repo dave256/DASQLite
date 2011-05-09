@@ -15,6 +15,8 @@
 
 @interface DASQLiteRow()
 
+- (void) valuesFromResultSet:(FMResultSet*)rs;
+
 + (NSString*)allWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause;
 + (NSMutableArray*)database:(FMDatabase*)db arrayOfObjectsforCommand:(NSString*)sqlcmd;
 + (NSMutableDictionary*)database:(FMDatabase*)db dictionaryOfObjectsforCommand:(NSString*)sqlcmd;
@@ -58,19 +60,26 @@
     [create release];
     for (NSString *col in colTypes) {
         if (! ([col isEqualToString:@"pkey"])) {
-            NSString *ctype = [colTypes objectForKey:col];
+            int columnType = [[colTypes objectForKey:col] intValue];
             NSString *nameType = nil;
-            if ([ctype isEqualToString:@"NSString"]) {
-                nameType = [[NSString alloc] initWithFormat:@", %@ text", col]; 
-            }
-            else if ([ctype isEqualToString:@"NSDate"]) {
-                nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
-            }
-            else if ([ctype isEqualToString:@"int"]) {
-                nameType = [[NSString alloc] initWithFormat:@", %@ integer", col];
-            }
-            else if ([ctype isEqualToString:@"double"]) {
-                nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
+            switch (columnType) {
+                case DASQLint:
+                    nameType = [[NSString alloc] initWithFormat:@", %@ integer", col];
+                    break;
+                
+                case DASQLdouble:
+                    nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
+                    break;
+                    
+                case DASQLstring:
+                    nameType = [[NSString alloc] initWithFormat:@", %@ text", col];
+                    break;
+                    
+                case DASQLdate:
+                    nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
+                    break;
+                default:
+                    break;
             }
             [cmdArray addObject:nameType];
             [nameType release];
@@ -119,7 +128,7 @@
     BOOL exists = [rs next];
     if (exists) {
         obj = [[[self class] alloc] init];
-        [rs kvcMagic:obj dates:[[self class] dateCols]];        
+        [obj valuesFromResultSet:rs];
         [rs close];
     }
     return [obj autorelease];
@@ -140,7 +149,36 @@
 }
 
 #pragma mark -
-#pragma mark private class methods
+#pragma mark private methods
+
+- (void) valuesFromResultSet:(FMResultSet*)rs {
+ 
+    NSDictionary *colTypes = [[self class] databaseTypes];
+    int i;
+    double d;
+    NSDate *date;
+    
+    int numCols = [rs columnCount];
+    for (i=0; i<numCols; ++i) {
+        NSString *colName = [rs columnNameForIndex:i];
+        int columnType = [[colTypes objectForKey:colName] intValue];
+        switch (columnType) {
+            case DASQLint:
+            case DASQLdouble:
+            case DASQLstring:
+                [self setValue:[rs objectForColumnIndex:i] forKey:colName];
+                break;
+            case DASQLdate:
+                d = [rs doubleForColumnIndex:i];
+                date = [[NSDate alloc] initWithTimeIntervalSince1970:d];
+                [self setValue:date forKey:colName];
+                [date release];
+            default:
+                break;
+        }
+    }
+}
+
 
 + (NSString*)allWhere:(NSString*)whereClause orderBy:(NSString *)orderByClause {
     NSString *where;
@@ -170,10 +208,9 @@
     NSMutableArray *items = [[NSMutableArray alloc] init];
     DLog(@"%@", sqlcmd);
     FMResultSet *rs = [db executeQuery:sqlcmd];
-    NSArray *dateCols = [[self class] dateCols];
     while ([rs next]) {
         DASQLiteRow *obj = [[[self class] alloc] init];
-        [rs kvcMagic:obj dates:dateCols];
+        [obj valuesFromResultSet:rs];
         [items addObject:obj];
         [obj release];
     }
@@ -185,10 +222,9 @@
     NSMutableDictionary *items = [[NSMutableDictionary alloc] init];
     DLog(@"%@", sqlcmd);
     FMResultSet *rs = [db executeQuery:sqlcmd];
-    NSArray *dateCols = [[self class] dateCols];
     while ([rs next]) {
         DASQLiteRow *obj = [[[self class] alloc] init];
-        [rs kvcMagic:obj dates:dateCols];
+        [obj valuesFromResultSet:rs];
         [items setObject:obj forKey:[NSNumber numberWithInt:obj.pkey]];
         [obj release];
     }
@@ -198,19 +234,29 @@
 #pragma mark -
 #pragma mark instance methods
 
+
 - (id)init {
     self = [super init];
     if (self) {
+        NSDate *date;
         NSDictionary *colTypes = [[self class] databaseTypes];
-        for (NSString *col in colTypes) {
-            NSString *ctype = [colTypes objectForKey:col];
-            if ([ctype isEqualToString:@"NSString"]) {
-                [self setValue:@"" forKey:col];
+        for (NSString *colName in colTypes) {
+            int columnType = [[colTypes objectForKey:colName] intValue];
+            switch (columnType) {
+                // numeric types should automatically be set to zero
+                case DASQLint:
+                case DASQLdouble:
+                    break;
+                case DASQLstring:
+                    [self setValue:@"" forKey:colName];
+                    break;
+                case DASQLdate:
+                    date = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
+                    [self setValue:date forKey:colName];
+                    [date release];
+                default:
+                    break;
             }
-            else if ([ctype isEqualToString:@"NSDate"]) {
-                [self setValue:[NSDate date] forKey:col];
-            }
-            // numeric types should automatically be set to zero
         }
     }
     return self;
@@ -223,38 +269,40 @@
     NSMutableArray *valuesArray = [[NSMutableArray alloc] initWithCapacity:numCols];
     NSMutableArray *dataArray = [[NSMutableArray alloc] initWithCapacity:numCols];
 
-    for (NSString *col in colTypes) {
-        if (! ([col isEqualToString:@"pkey"])) {
-            id s;
-            NSString *ctype = [colTypes objectForKey:col];
-            if ([self valueForKey:col]) {
-                
-                [colArray addObject:col];
-                [valuesArray addObject:@"?"];
-                
-                if ([ctype isEqualToString:@"NSString"]) {
-                    NSString *val = [self valueForKey:col];
-                    if ([val isKindOfClass:[NSAttributedString class]]) {
-                        val = [(NSAttributedString*)val string];
+    for (NSString *colName in colTypes) {
+        if (! ([colName isEqualToString:@"pkey"])) {
+            NSString *stringVal;
+            NSDate *dateVal;
+            id s = nil;
+            [colArray addObject:colName];
+            [valuesArray addObject:@"?"];
+            int columnType = [[colTypes objectForKey:colName] intValue];
+            
+            switch (columnType) {
+                case DASQLint:
+                case DASQLdouble:
+                    s = [self valueForKey:colName];
+                    [s retain];
+                    break;
+                case DASQLstring:
+                    stringVal = [self valueForKey:colName];
+                    if ([stringVal isKindOfClass:[NSAttributedString class]]) {
+                        stringVal = [(NSAttributedString*)stringVal string];
                     }
-                    if (val) {
-                        s = [[NSString alloc] initWithString:val];
+                    if (stringVal) {
+                        s = [[NSString alloc] initWithString:stringVal];
                     }
                     else {
                         s = [[NSString alloc] initWithFormat:@""];
                     }
-                }
-                else if ([ctype isEqualToString:@"NSDate"]) {
-                    NSDate *val = [self valueForKey:col];
-                    s = [[NSNumber alloc] initWithDouble:[val timeIntervalSince1970]];
-
-                }
-                // int or double
-                else {
-                    s = [self valueForKey:col];
-                    [s retain];
-                }
-                
+                    break;
+                case DASQLdate:
+                    dateVal = [self valueForKey:colName];
+                    s = [[NSNumber alloc] initWithDouble:[dateVal timeIntervalSince1970]];
+                default:
+                    break;
+            }
+            if (s) {
                 [dataArray addObject:s];
                 [s release];
             }
@@ -287,34 +335,38 @@
     [cmdArray addObject:[[self class] databaseTable]];
     [cmdArray addObject:@"set"];
 
-    for (NSString *col in colTypes) {
-        id s;
-        NSString *ctype = [colTypes objectForKey:col];
-        NSString *colValue = [[NSString alloc] initWithFormat:@"%@=?", col];
+    for (NSString *colName in colTypes) {
+        id s = nil;
+        int columnType = [[colTypes objectForKey:colName] intValue];
+        NSString *colValue = [[NSString alloc] initWithFormat:@"%@=?", colName];
         [cmdArray addObject:colValue];
         [colValue release];
         
-        if ([ctype isEqualToString:@"NSString"]) {
-            NSString *val = [self valueForKey:col];
-            if ([val isKindOfClass:[NSAttributedString class]]) {
-                val = [(NSAttributedString*)val string];
-            }
-            if (val) {
-                s = [[NSString alloc] initWithString:val];
-            }
-            else {
-                s = [[NSString alloc] initWithFormat:@""];
-            }
-        }
-        else if ([ctype isEqualToString:@"NSDate"]) {
-            NSDate *val = [self valueForKey:col];
-            s = [[NSNumber alloc] initWithDouble:[val timeIntervalSince1970]];
-            
-        }
-        // int or double
-        else {
-            s = [self valueForKey:col];
-            [s retain];
+        NSString *stringVal;
+        NSDate *dateVal;
+        switch (columnType) {
+            case DASQLint:
+            case DASQLdouble:
+                s = [self valueForKey:colName];
+                [s retain];
+                break;
+            case DASQLstring:
+                stringVal = [self valueForKey:colName];
+                if ([stringVal isKindOfClass:[NSAttributedString class]]) {
+                    stringVal = [(NSAttributedString*)stringVal string];
+                }
+                if (stringVal) {
+                    s = [[NSString alloc] initWithString:stringVal];
+                }
+                else {
+                    s = [[NSString alloc] initWithFormat:@""];
+                }
+                break;
+            case DASQLdate:
+                dateVal = [self valueForKey:colName];
+                s = [[NSNumber alloc] initWithDouble:[dateVal timeIntervalSince1970]];
+            default:
+                break;
         }
         
         [dataArray addObject:s];

@@ -13,7 +13,6 @@
 
 + (NSString*)databaseTable;
 + (NSDictionary*)databaseTypes;
-+ (NSArray*)dateCols;
 
 @end
 

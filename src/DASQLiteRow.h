@@ -10,6 +10,13 @@
 
 #import "DASQLiteRowProtocol.h"
 
+typedef enum {
+    DASQLint,
+    DASQLdouble,
+    DASQLstring,
+    DASQLdate,
+} DASQLiteType;
+
 @class FMDatabase;
 
 // databaseTable and databaseTypes of DASQLiteRowProtocol must be overriden by subclasses of DASQLiteRow

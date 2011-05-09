@@ -15,7 +15,6 @@
 
 static NSString *table;
 static NSDictionary *databaseTypes;
-static NSArray *dateCols;
 
 + (void)initialize
 {
@@ -24,11 +23,10 @@ static NSArray *dateCols;
         table = @"course";
         
         databaseTypes = [[NSDictionary alloc] initWithObjectsAndKeys:
-                         @"int", @"pkey",
-                         @"int", @"position",
-                     @"NSString", @"name",
+                         [NSNumber numberWithInt:DASQLint], @"pkey",
+                         [NSNumber numberWithInt:DASQLint], @"position",
+                         [NSNumber numberWithInt:DASQLstring], @"name",
                          nil];
-        dateCols = nil;
     });
 }
 
@@ -42,10 +40,6 @@ static NSArray *dateCols;
     return databaseTypes;
 }
 
-+ (NSArray*)dateCols
-{
-    return dateCols;
-}
 
 - (NSString*)description {
     return [NSString stringWithFormat:@"%@ %d %d", name, position, pkey];
