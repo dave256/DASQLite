@@ -63,6 +63,7 @@
             int columnType = [[colTypes objectForKey:col] intValue];
             NSString *nameType = nil;
             switch (columnType) {
+                case DASQLbool:
                 case DASQLint:
                     nameType = [[NSString alloc] initWithFormat:@", %@ integer", col];
                     break;
@@ -78,6 +79,7 @@
                 case DASQLdate:
                     nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
                     break;
+
                 default:
                     break;
             }
@@ -163,6 +165,7 @@
         NSString *colName = [rs columnNameForIndex:i];
         int columnType = [[colTypes objectForKey:colName] intValue];
         switch (columnType) {
+            case DASQLbool:
             case DASQLint:
             case DASQLdouble:
             case DASQLstring:
@@ -244,6 +247,7 @@
             int columnType = [[colTypes objectForKey:colName] intValue];
             switch (columnType) {
                 // numeric types should automatically be set to zero
+                case DASQLbool:
                 case DASQLint:
                 case DASQLdouble:
                     break;
@@ -279,6 +283,7 @@
             int columnType = [[colTypes objectForKey:colName] intValue];
             
             switch (columnType) {
+                case DASQLbool:
                 case DASQLint:
                 case DASQLdouble:
                     s = [self valueForKey:colName];
@@ -345,6 +350,7 @@
         NSString *stringVal;
         NSDate *dateVal;
         switch (columnType) {
+            case DASQLbool:
             case DASQLint:
             case DASQLdouble:
                 s = [self valueForKey:colName];

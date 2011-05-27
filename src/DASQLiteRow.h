@@ -11,6 +11,7 @@
 #import "DASQLiteRowProtocol.h"
 
 typedef enum {
+    DASQLbool,
     DASQLint,
     DASQLdouble,
     DASQLstring,
