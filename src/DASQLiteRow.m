@@ -77,6 +77,7 @@
                     break;
                     
                 case DASQLdate:
+                case DASQLrefdate:
                     nameType = [[NSString alloc] initWithFormat:@", %@ real", col];
                     break;
 
@@ -176,6 +177,13 @@
                 date = [[NSDate alloc] initWithTimeIntervalSince1970:d];
                 [self setValue:date forKey:colName];
                 [date release];
+                break;
+            case DASQLrefdate:
+                d = [rs doubleForColumnIndex:i];
+                date = [[NSDate alloc] initWithTimeIntervalSinceReferenceDate:d];
+                [self setValue:date forKey:colName];
+                [date release];
+                break;
             default:
                 break;
         }
@@ -255,6 +263,7 @@
                     [self setValue:@"" forKey:colName];
                     break;
                 case DASQLdate:
+                case DASQLrefdate:
                     date = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
                     [self setValue:date forKey:colName];
                     [date release];
@@ -304,12 +313,19 @@
                 case DASQLdate:
                     dateVal = [self valueForKey:colName];
                     s = [[NSNumber alloc] initWithDouble:[dateVal timeIntervalSince1970]];
+                    break;
+                case DASQLrefdate:
+                    dateVal = [self valueForKey:colName];
+                    s = [[NSNumber alloc] initWithDouble:[dateVal timeIntervalSinceReferenceDate]];
                 default:
                     break;
             }
             if (s) {
                 [dataArray addObject:s];
                 [s release];
+            }
+            else {
+                DLog(@"%@", colName);
             }
         }
     }
@@ -371,6 +387,11 @@
             case DASQLdate:
                 dateVal = [self valueForKey:colName];
                 s = [[NSNumber alloc] initWithDouble:[dateVal timeIntervalSince1970]];
+                break;
+            case DASQLrefdate:
+                dateVal = [self valueForKey:colName];
+                s = [[NSNumber alloc] initWithDouble:[dateVal timeIntervalSinceReferenceDate]];
+                break;
             default:
                 break;
         }

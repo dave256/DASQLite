@@ -16,6 +16,7 @@ typedef enum {
     DASQLdouble,
     DASQLstring,
     DASQLdate,
+    DASQLrefdate,
 } DASQLiteType;
 
 @class FMDatabase;
